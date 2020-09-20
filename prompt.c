@@ -2,6 +2,7 @@
 #include "headers.h"
 #include "global.h"
 #include "execute_main.h"
+#include "fg.h"
 int gethomedir()
 {     
 	HOME_DIR = (char*)malloc(sizeof(char)*PATH_MAX);
@@ -336,7 +337,7 @@ int get_user_command()
 			return 0;
 		if(strcmp(*args, "exit")==0)
 			exit(0);
-		if(strcmp(*args, "cd")==0)
+		if(strcmp(*args, "cd")==0 || strcmp(*args, "fg")==0)
 			exec_main(*args, args);
 		else
 		{

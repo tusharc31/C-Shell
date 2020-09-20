@@ -8,6 +8,8 @@
 #include "history.h"
 #include "jobs.h"
 #include "kjob.h"
+#include "bg.h"
+#include "fg.h"
 int exec_main(char *name, char ** argv)
 {
 	int argc=0;
@@ -18,6 +20,18 @@ int exec_main(char *name, char ** argv)
 		kjob(argc, argv);
 		return 0;
 	}
+	if(strcmp(name, "fg") == 0)
+	{
+	    fg(argc, argv);
+		return 0;
+	}
+
+	if(strcmp(name, "bg") == 0)
+	{
+		bg(argc, argv);
+		return 0;
+	}
+
 	if(strcmp(name, "nightswatch")==0)
 	{
 		nightswatch(argc,argv);
@@ -28,9 +42,6 @@ int exec_main(char *name, char ** argv)
 		history(argc,argv);
 		return 0;
 	}
-
-
-
 	if(strcmp(name, "ls")==0)
 	{
 		ls(argc,argv);
@@ -41,8 +52,6 @@ int exec_main(char *name, char ** argv)
 		pinfo(argc,argv);
 		return 0;
 	}
-
-
 	if(strcmp(name, "cd")==0)
 	{
 		cd(argc,argv);
@@ -63,25 +72,7 @@ int exec_main(char *name, char ** argv)
 		jobs(argc, argv);
 		return 0;
 	}
-	pid_t pd;
-	pd = fork();
-	if(pd<0)
-	{
-		perror("Forking failed");
-		return 0;
-	}
-	if(pd==0)
-	{
 	if(execvp(name,argv)<0)
-	{perror("Exec failed");}
-	}
-	else
-	{
-		pid_t x=0;
-		while((x=wait(NULL))!=pd)
-		{
-			printf("%d", x);
-		}
-	}
+	{perror("Exec failed"); return 1;}
 	return 0;
 }
