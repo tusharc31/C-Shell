@@ -47,7 +47,7 @@ int prompt() {
 	printf("<%s@%s:%s>", username, hostname, cwd);
 	return 0;
 }
-int parse(char* command, char** args, int* background, char* inp, char* out, int ap)
+int parse(char* command, char** args, int* background, char* inp, char* out, int *ap)
 {
 	char *token;
 	char delim[50]=" \n";
@@ -83,7 +83,7 @@ int parse(char* command, char** args, int* background, char* inp, char* out, int
 			int len=2;
 			if(strlen(token)>1 && token[1]=='>')
 			{
-				ap=1;
+				*ap=1;
 				len=2;
 			}
 			if((int)strlen(token)>len)
@@ -112,6 +112,23 @@ int parse(char* command, char** args, int* background, char* inp, char* out, int
 	args[ind]=0;
 	return 0;
 }
+int parse_pipeline(char* command, char** commands, int* com)
+{
+	char *token;
+	char delim[50]="|";
+	token = strtok(command, delim);
+	int ind=0;
+	while(token!=NULL)
+	{
+		commands[ind]=token;
+		ind++;
+		token = strtok(NULL, delim);
+	}
+	commands[ind]=0;
+	*com=ind;
+	return 0;
+}
+
 void print_dead_bg()
 {
 	pid_t pid=-1;
@@ -125,7 +142,7 @@ void print_dead_bg()
 		free(pname[pid]);
 	}
 }
-int  execute(char **argv, int background, char *inp,char *out, int ap)
+int  execute(char **argv, int background, char *inp,char *out, int ap, int in, int outt)
 {
 	pid_t  pid;
 	int status;
@@ -157,6 +174,10 @@ int  execute(char **argv, int background, char *inp,char *out, int ap)
 			close(0);
 			dup(filefd);
 		}
+		else if(in!=0)
+		{
+			dup2(in,0);
+		}
 		if(strlen(out)>0)
 		{
 			int filefd=0;
@@ -167,13 +188,17 @@ int  execute(char **argv, int background, char *inp,char *out, int ap)
 			close(1);//Close stdout
 			dup(filefd);
 		}
+		else if(outt!=1)
+			dup2(outt,1);
 		exec_main(*argv, argv);
 		exit(0);
 	}
 	else
 	{
+
 		if(background==0)
 		{
+			fgprocess = pid;
 			pid_t x;
 			while ((x=wait(&status)) != pid)
 			{
@@ -186,6 +211,7 @@ int  execute(char **argv, int background, char *inp,char *out, int ap)
 
 				}
 			}
+			fgprocess=-1;
 		}
 		else
 		{
@@ -230,30 +256,61 @@ int get_user_command()
 	char* command;
 	command = (char*)malloc(sizeof(char)*1024);
 	size_t  sz=0;
-	getline(&command, &sz, stdin);
+	int x=getline(&command, &sz, stdin);
+	if(x==-1)
+		exit(0);
 	if(strlen(command)==0)
 		return 0;
 	int background=0;
 	add_history(command);
-	char *args[64];
-	char *inp=NULL;
-	char* out=NULL;
-			out=(char*)malloc(1024);
-			inp=(char*)malloc(1024);
-			out[0]='\0';
-			inp[0]='\0';
-	int ap=0;
-	if(parse(command, args, &background, inp, out,ap))
-		return 0;
-	if(*args==NULL)
-		return 0;
-	if(strcmp(*args, "exit")==0)
-		exit(0);
-	if(strcmp(*args, "cd")==0)
-		exec_main(*args, args);
-	else
+	int com=0;
+	char* commands[64];
+	parse_pipeline(command,commands, &com);
+	int pipefd[2];
+	int in = 0;
+	int outt=0;
+	for(int i=0;i<com;i++)
 	{
-		execute(args, background, inp, out, ap);
+
+		char part_command[1024];
+		//part_command=(char*)malloc(1024);
+		strcpy(part_command, commands[i]);
+		char *inp=NULL;
+		char* out=NULL;
+		out=(char*)malloc(1024);
+		inp=(char*)malloc(1024);
+		out[0]='\0';
+		inp[0]='\0';
+		if(i!=com-1)
+		{
+			pipe(pipefd);
+			outt=pipefd[1];
+		}
+		else
+		{
+			outt=1;
+		}
+		int ap=0;
+		char *args[64];
+		if(parse(part_command, args, &background, inp, out,&ap))
+			return 0;
+		if(*args==NULL)
+			return 0;
+		if(strcmp(*args, "exit")==0)
+			exit(0);
+		if(strcmp(*args, "cd")==0)
+			exec_main(*args, args);
+		else
+		{
+			execute(args, background, inp, out, ap, in, outt);
+		}
+		if(i!=com-1)
+		close(pipefd[1]);
+		if(in!=0)
+			close(in);
+		in=pipefd[0];
+		free(out);
+		free(inp);
 	}
 	free(command);
 	return 0;

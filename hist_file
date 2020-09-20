@@ -1,20 +1,20 @@
-cat < cd.c > cd.kk
-cat
-cat < cd.c
-cat < cd.c
-cat
-cat < cd.c
-cat < cd.c
-cat < cd.c
-cat < cd.c
-cat < cd.c
-sleep 5 < cd.c
-sleep < cd.c
-cat < cd.c
+yo
+asd
 exit
-nightswatch interrupt -n 10
-nightswatch interrupt
-history 10
-ls
-ls ~ -la
-ls -l
+sleep 100000
+exit
+gedit
+gediy
+exit
+exit
+
+
+
+
+
+
+
+
+
+
+

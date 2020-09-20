@@ -5,4 +5,6 @@ char* CURR_DIR;
 char *pname[40000];
 int pro_stack[40000];
 int stack_ind;
+int fgprocess;
+void init();
 #endif
