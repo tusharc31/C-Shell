@@ -7,11 +7,17 @@
 #include "nightswatch.h"
 #include "history.h"
 #include "jobs.h"
+#include "kjob.h"
 int exec_main(char *name, char ** argv)
 {
 	int argc=0;
 	while(argv[argc]!=NULL)
 		argc++;
+	if(strcmp(name, "kjob") == 0)
+	{
+		kjob(argc, argv);
+		return 0;
+	}
 	if(strcmp(name, "nightswatch")==0)
 	{
 		nightswatch(argc,argv);
