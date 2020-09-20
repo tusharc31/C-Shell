@@ -128,18 +128,61 @@ int parse_pipeline(char* command, char** commands, int* com)
 	*com=ind;
 	return 0;
 }
+void delete_bg(int pid, int status)
+{
+		struct bgprocess* curr = root;
+		while(curr->pid!=pid && curr->next!=NULL)
+		{
+			curr=curr->next;
+		}
+		if(curr->pid!=pid)
+			return;
+		if(WIFSTOPPED(status)==1)
+		{
+			curr->st=1;
+			return;
+		}
+		else if(WIFCONTINUED(status)==1)
+		{
+			curr->st=0;
+			return;
+		}
+		free(pname[pid]);
+		if(WIFEXITED(status)==1)
+			printf("process %s with pid %d exited normally\n",pname[pid],pid);
+		else
+			printf("process %s with pid %d exited abnormally\n",pname[pid],pid);
+
+		curr->prev->next=curr->next;
+		if(curr->next!=NULL && curr->next->prev!=NULL)
+		curr->next->prev=curr->prev;
+		free(curr);
+}
+void add_bg(int pid, char* pnamex)
+{
+		struct bgprocess* curr = root;
+		pname[pid]=(char*)malloc(sizeof(char)*(strlen(pnamex)+1));
+		while(curr->next!=NULL)
+		{
+			curr=curr->next;
+		}
+		struct bgprocess* newbg=(struct bgprocess*)malloc(sizeof(struct bgprocess));
+		strcpy(pname[pid], pnamex);
+		newbg->next=NULL;
+		newbg->pid=pid;
+		newbg->st=0;
+		curr->next=newbg;
+		newbg->prev=curr;
+}
+
 
 void print_dead_bg()
 {
 	pid_t pid=-1;
 	int status;
-	while((pid = waitpid(pid,&status, WNOHANG))>0)
+	while((pid = waitpid(pid,&status, WNOHANG | WUNTRACED | WCONTINUED))>0)
 	{
-		if(WIFEXITED(status)==1)
-			printf("process %s with pid %d exited normally\n",pname[pid],pid);
-		else
-			printf("process %s with pid %d exited abnormally\n",pname[pid],pid);
-		free(pname[pid]);
+		delete_bg(pid, status);
 	}
 }
 int  execute(char **argv, int background, char *inp,char *out, int ap, int in, int outt)
@@ -203,12 +246,8 @@ int  execute(char **argv, int background, char *inp,char *out, int ap, int in, i
 			while ((x=wait(&status)) != pid)
 			{
 				if(x>0)
-				{	if(WIFEXITED(status)==1)
-					    printf("process %s with pid %d exited normally\n",pname[x],x);
-					else
-						printf("process %s with pid %d exited abnormally\n",pname[x],x);
-					free(pname[x]);
-
+				{
+					delete_bg(x, status);
 				}
 			}
 			fgprocess=-1;
@@ -216,8 +255,7 @@ int  execute(char **argv, int background, char *inp,char *out, int ap, int in, i
 		else
 		{
 			printf("process started with process id %d\n", pid);
-			pname[pid]=(char*)malloc(sizeof(char)*(strlen(*argv)+1));
-			strcpy(pname[pid], *argv);
+			add_bg(pid, *argv);
 			return 0;
 		}
 	}

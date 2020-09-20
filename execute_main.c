@@ -6,6 +6,7 @@
 #include "pinfo.h"
 #include "nightswatch.h"
 #include "history.h"
+#include "jobs.h"
 int exec_main(char *name, char ** argv)
 {
 	int argc=0;
@@ -49,6 +50,11 @@ int exec_main(char *name, char ** argv)
 	if(strcmp(name, "pwd")==0)
 	{
 		pwd(argc,argv);
+		return 0;
+	}
+	if(strcmp(name, "jobs")==0)
+	{
+		jobs(argc, argv);
 		return 0;
 	}
 	pid_t pd;

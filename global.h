@@ -6,5 +6,11 @@ char *pname[40000];
 int pro_stack[40000];
 int stack_ind;
 int fgprocess;
+struct bgprocess
+{
+	int pid, st;
+	struct bgprocess *next, *prev;
+};
+struct bgprocess *root;
 void init();
 #endif

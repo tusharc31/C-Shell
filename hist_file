@@ -1,20 +1,20 @@
-yo
-asd
 exit
-sleep 100000
-exit
-gedit
-gediy
-exit
-exit
-
-
-
-
-
-
-
-
-
-
-
+pinfo 22227
+jobs
+kill -18 22227
+pinfo 22227
+jobs
+kill -19 22227
+pinfo 22227
+jobs
+kill -23 22227
+pinfo 22227
+jobs
+kill -17 22227
+sleep 1000 &
+jobs
+kill -9 22150
+jobs
+[2;2R[>1;5202;0c]10;rgb:ffff/ffff/ffff]11;rgb:0000/0000/0000
+kill -9 22138
+jobs
