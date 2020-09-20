@@ -148,12 +148,12 @@ void delete_bg(int pid, int status)
 			curr->st=0;
 			return;
 		}
-		free(pname[pid]);
 		if(WIFEXITED(status)==1)
 			printf("process %s with pid %d exited normally\n",pname[pid],pid);
 		else
 			printf("process %s with pid %d exited abnormally\n",pname[pid],pid);
 
+		free(pname[pid]);
 		curr->prev->next=curr->next;
 		if(curr->next!=NULL && curr->next->prev!=NULL)
 		curr->next->prev=curr->prev;
@@ -243,6 +243,7 @@ int  execute(char **argv, int background, char *inp,char *out, int ap, int in, i
 		if(background==0)
 		{
 			fgprocess = pid;
+			strcpy(fgprocessname, *argv);
 			pid_t x;
 			while ((x=wait(&status)) != pid)
 			{
@@ -335,9 +336,9 @@ int get_user_command()
 			return 0;
 		if(*args==NULL)
 			return 0;
-		if(strcmp(*args, "exit")==0)
+		if(strcmp(*args, "exit")==0 || strcmp(*args, "quit")==0)
 			exit(0);
-		if(strcmp(*args, "cd")==0 || strcmp(*args, "fg")==0)
+		if(strcmp(*args, "cd")==0 || strcmp(*args, "fg")==0 || strcmp(*args, "setenv")==0 || strcmp(*args, "unsetenv")==0)
 			exec_main(*args, args);
 		else
 		{

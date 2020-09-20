@@ -24,11 +24,26 @@ static void handle_sigint(int sig)
 {
 	if(fgprocess!=-1)
 	{
-		kill(fgprocess, 9);
+		kill(fgprocess, SIGINT);
+		fgprocess=-1;
 	}
 	printf("\n");
 	run();
 }
+static void handle_sigstop(int sig) 
+{
+	if(fgprocess!=-1)
+	{
+		kill(fgprocess, SIGSTOP);
+		printf("%d", setpgid(fgprocess, 0));
+	add_bg(fgprocess, fgprocessname);
+	fgprocess=-1;
+	}
+	printf("\n");
+	run();
+}
+
+
 
 int main()
 {
@@ -38,6 +53,12 @@ int main()
     sa.sa_flags = SA_NODEFER;
     sigemptyset(&sa.sa_mask);
     sigaction(SIGINT, &sa, 0);
+	struct sigaction sb = {0};
+    sb.sa_handler = handle_sigstop;
+    sb.sa_flags = SA_NODEFER;
+    sigemptyset(&sb.sa_mask);
+    sigaction(SIGTSTP, &sb, 0);
+
 	gethomedir();
 	run();
 }

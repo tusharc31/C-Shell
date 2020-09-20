@@ -10,11 +10,29 @@
 #include "kjob.h"
 #include "bg.h"
 #include "fg.h"
+#include "setenv.h"
+#include "unsetenv.h"
+#include "overkill.h"
 int exec_main(char *name, char ** argv)
 {
 	int argc=0;
 	while(argv[argc]!=NULL)
 		argc++;
+	if(strcmp(name, "setenv")==0)
+	{
+		setenvx(argc, argv);
+		return 0;
+	}
+	if(strcmp(name, "unsetenv")==0)
+	{
+		unsetenvx(argc, argv);
+		return 0;
+	}
+	if(strcmp(name, "overkill")==0)
+	{
+		overkill(argc, argv);
+		return 0;
+	}
 	if(strcmp(name, "kjob") == 0)
 	{
 		kjob(argc, argv);

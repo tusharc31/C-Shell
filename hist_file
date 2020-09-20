@@ -1,20 +1,20 @@
 exit
-quit
-quit
 jobs
 jobs
-kjob 1 9
+bg 1
+gedit YO
+fg 1
 jobs
-sleep 1000 &
-sleep 1000
-vim &
+gedit YO
+exit
 jobs
 fg 1
-vim &
-exit
-make
-vim prompt.c
 jobs
-fg 1
-vim &
+jobs
+gedit YO
 exit
+sleep 100
+sleep 10000
+quit
+exit
+exti
