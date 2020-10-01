@@ -22,6 +22,8 @@ int run()
 
 static void handle_sigint(int sig) 
 {
+	if(getpid() !=SHELL_ID)
+		exit(0);
 	if(fgprocess!=-1)
 	{
 		kill(fgprocess, SIGINT);
@@ -48,6 +50,7 @@ static void handle_sigstop(int sig)
 int main()
 {
 	init();
+	SHELL_ID = getpid();
 	struct sigaction sa = {0};
     sa.sa_handler = handle_sigint;
     sa.sa_flags = SA_NODEFER;

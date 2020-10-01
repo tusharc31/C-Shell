@@ -47,7 +47,7 @@ int ls(int argc, char** argv)
 	if(argc<1)
 	{
 		printf("Invalid number of arguments");
-		return 1;
+		exit(1);
 	}
 	char backdir[PATH_MAX], dirx[PATH_MAX];
 	strcpy(backdir, CURR_DIR);
@@ -68,7 +68,7 @@ int ls(int argc, char** argv)
 		if(len>PATH_MAX)
 		{
 			perror("File name too long");
-			return -1;
+			exit(1);
 		}
 		direc=1;
 		strcpy(dirx, argv[i]);
@@ -83,7 +83,7 @@ int ls(int argc, char** argv)
 	if(chdir(dirx)<0)
 	{
 		perror("Error in cd");
-		return 1;
+		exit(1);
 	}
 	DIR *mydir;
     struct dirent *myfile;

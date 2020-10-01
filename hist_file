@@ -1,20 +1,20 @@
-exit
-jobs
-jobs
-bg 1
-gedit YO
-fg 1
-jobs
-gedit YO
-exit
-jobs
-fg 1
-jobs
-jobs
-gedit YO
-exit
-sleep 100
-sleep 10000
-quit
-exit
-exti
+ls; ls ../;ls ../../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+[A
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../
+ls; ls ../;ls ../

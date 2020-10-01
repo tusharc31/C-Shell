@@ -252,6 +252,15 @@ int  execute(char **argv, int background, char *inp,char *out, int ap, int in, i
 					delete_bg(x, status);
 				}
 			}
+			if(WIFEXITED(status))
+			{
+			LATEST_EXIT_STATUS = WEXITSTATUS(status);
+			}
+            else
+			{
+			printf("NO");
+				LATEST_EXIT_STATUS=1;
+			}
 			fgprocess=-1;
 		}
 		else
@@ -291,18 +300,9 @@ void add_history(char* command)
 	fputs(command_list, stream);
 	fclose(stream);
 }
-int get_user_command()
-{
-	char* command;
-	command = (char*)malloc(sizeof(char)*1024);
-	size_t  sz=0;
-	int x=getline(&command, &sz, stdin);
-	if(x==-1)
-		exit(0);
-	if(strlen(command)==0)
-		return 0;
+int solve(char* command)
+{	
 	int background=0;
-	add_history(command);
 	int com=0;
 	char* commands[64];
 	parse_pipeline(command,commands, &com);
@@ -339,7 +339,7 @@ int get_user_command()
 		if(strcmp(*args, "exit")==0 || strcmp(*args, "quit")==0)
 			exit(0);
 		if(strcmp(*args, "cd")==0 || strcmp(*args, "fg")==0 || strcmp(*args, "setenv")==0 || strcmp(*args, "unsetenv")==0)
-			exec_main(*args, args);
+			LATEST_EXIT_STATUS=exec_main(*args, args);
 		else
 		{
 			execute(args, background, inp, out, ap, in, outt);
@@ -352,6 +352,133 @@ int get_user_command()
 		free(out);
 		free(inp);
 	}
-	free(command);
 	return 0;
 }
+int special_parse(char* command, char** commands)
+{	char *token;
+	char delim[50]="$@\n";
+	token = strtok(command, delim);
+	int ind=0;
+	while(token!=NULL)
+	{
+		commands[ind]=(char*)malloc(strlen(token));
+		strcpy(commands[ind], token);
+		ind++;
+		token = strtok(NULL, delim);
+	}
+	return ind;
+}
+int short_circuit(long long int res, char x)
+{
+	if(x=='@' && res)
+		return 1;
+	if(x=='$' && res==0)
+		return 1;
+	return 0;
+}
+int solve_command(char* command)
+{
+	if(strlen(command)==0)
+		return 0;
+	int i=0, j=0;
+	char bitw[512];
+	for(i=0;i<(int)strlen(command);i++)
+	{
+		if(command[i]=='@')
+		{
+			bitw[j]='@';
+			j++;
+		}
+		else if(command[i]=='$')
+		{
+			bitw[j]='$';
+			j++;
+		}
+	}
+	char *commands[512];
+	int ind=special_parse(command, commands);
+	i=0;
+	int k=0;
+	long long int  res=0;
+	//for(int i=0;i<ind;i++)
+	//	printf("%s\n", commands[i]);
+	if(j==0)
+	{
+		solve(command);
+		res=LATEST_EXIT_STATUS;
+	}
+	else
+	{
+	while(i<ind)
+	{
+		//printf("%lld %cNIG\n", res, bitw[k]);
+		if(i!=0 && short_circuit(res,bitw[k]))
+		{
+		k++;
+		i++;
+		continue;
+		}
+		if(i==0)
+		{
+			solve(commands[i]);
+			res=LATEST_EXIT_STATUS;
+			i++;
+			continue;
+		}
+		solve(commands[i]);
+		if(bitw[k]=='@')
+			res|=LATEST_EXIT_STATUS;
+		else
+			res&=LATEST_EXIT_STATUS;
+		i++,k++;
+	}
+	}
+	for(i=0;i<ind;i++)
+	{
+		free(commands[i]);
+	}
+	return res;
+}
+int get_user_command()
+{
+	char* command;
+	command = (char*)malloc(sizeof(char)*1024);
+	size_t  sz=0;
+	int x=getline(&command, &sz, stdin);
+	if(x==-1)
+		exit(0);
+	if(strlen(command)==0)
+		return 0;
+	add_history(command);
+	char delimx[10]=";\n";
+	char **tmp;
+	tmp=(char**)malloc(25);
+	int res=0,cnt=0;
+	char *token=strtok(command,delimx);
+	while(token!=NULL)
+	{
+		printf("%s\n", token);
+		*(tmp+cnt) = (char*)malloc(strlen(token)+1);
+	    //sprintf(tmp,"%s", token);
+		strcpy(*(tmp+cnt), token);
+		token=strtok(NULL,delimx);
+		cnt++;
+	}
+	int ind=0;
+	while(ind<cnt)
+	{
+		res=solve_command(*(tmp+ind));
+		free(*(tmp+ind));
+		ind++;
+	}
+	if(res==0 && cnt)
+		printf("\n:')");
+	else if(cnt)
+		printf("\n:'(");
+	free(tmp);
+	free(command);
+	return 0;
+
+}
+
+

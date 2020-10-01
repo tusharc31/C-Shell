@@ -20,74 +20,73 @@ int exec_main(char *name, char ** argv)
 		argc++;
 	if(strcmp(name, "setenv")==0)
 	{
-		setenvx(argc, argv);
-		return 0;
+		return setenvx(argc, argv);
 	}
 	if(strcmp(name, "unsetenv")==0)
 	{
-		unsetenvx(argc, argv);
-		return 0;
+		return unsetenvx(argc, argv);
 	}
 	if(strcmp(name, "overkill")==0)
 	{
-		overkill(argc, argv);
+		return overkill(argc, argv);
 		return 0;
 	}
 	if(strcmp(name, "kjob") == 0)
 	{
-		kjob(argc, argv);
+		return kjob(argc, argv);
+		printf("YOX");
 		return 0;
 	}
 	if(strcmp(name, "fg") == 0)
 	{
-	    fg(argc, argv);
+	    return fg(argc, argv);
 		return 0;
 	}
 
 	if(strcmp(name, "bg") == 0)
 	{
-		bg(argc, argv);
+		return bg(argc, argv);
 		return 0;
 	}
 
 	if(strcmp(name, "nightswatch")==0)
 	{
-		nightswatch(argc,argv);
+		return nightswatch(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "history")==0)
 	{
-		history(argc,argv);
+		return history(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "ls")==0)
 	{
-		ls(argc,argv);
+		return ls(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "pinfo")==0)
 	{
-		pinfo(argc,argv);
+		return pinfo(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "cd")==0)
 	{
-		cd(argc,argv);
+		return cd(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "echo")==0)
 	{
-		echo(argc,argv);
+		return echo(argc,argv);
 		return 0;
 	}	
 	if(strcmp(name, "pwd")==0)
 	{
-		pwd(argc,argv);
+		return pwd(argc,argv);
 		return 0;
 	}
 	if(strcmp(name, "jobs")==0)
 	{
-		jobs(argc, argv);
+		return jobs(argc, argv);
 		return 0;
 	}
 	if(execvp(name,argv)<0)
