@@ -2,6 +2,7 @@
 #define GLOBAL_VARS
 char* HOME_DIR;
 char* CURR_DIR;
+char LAST_DIR[4000];
 char *pname[40000];
 long long int LATEST_EXIT_STATUS;
 int pro_stack[40000];

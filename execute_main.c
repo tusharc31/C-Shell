@@ -90,6 +90,6 @@ int exec_main(char *name, char ** argv)
 		return 0;
 	}
 	if(execvp(name,argv)<0)
-	{perror("Exec failed"); return 1;}
+	{perror("Exec failed"); exit(1);}
 	return 0;
 }

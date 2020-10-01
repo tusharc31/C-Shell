@@ -1,20 +1,20 @@
-ls; ls ../;ls ../../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-[A
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
-ls; ls ../;ls ../
+ls;ps -Q;ps -Q
+ps -Q;ps -Q;ls
+cd -
+cd ../
+exit
+cd -
+cd ../
+ls @ echo successful $ echo fail
+ps -Q $ ps -Q
+> ps -Q $ ps -Q $ ls @ echo penguins $ ls
+ls @ echo penguins
+ls $ echo penguins
+ps -Q
+exit
+pwd asdasd asdasdasd asdasd
+ads
+qwe
+qwe
+qwe
+qwe

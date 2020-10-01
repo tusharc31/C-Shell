@@ -7,6 +7,7 @@ int gethomedir()
 {     
 	HOME_DIR = (char*)malloc(sizeof(char)*PATH_MAX);
 	CURR_DIR = (char*)malloc(sizeof(char)*PATH_MAX);
+	LAST_DIR[0]='\0';
 	if (getcwd(HOME_DIR, PATH_MAX) == NULL) 
 	{
 		perror("Unable to get Home directory");
@@ -457,7 +458,6 @@ int get_user_command()
 	char *token=strtok(command,delimx);
 	while(token!=NULL)
 	{
-		printf("%s\n", token);
 		*(tmp+cnt) = (char*)malloc(strlen(token)+1);
 	    //sprintf(tmp,"%s", token);
 		strcpy(*(tmp+cnt), token);

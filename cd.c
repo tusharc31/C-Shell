@@ -9,7 +9,16 @@ int cd(int argc, char** argv)
 	}
 		char act[4097];
 		strcpy(act, argv[1]);
-	if(strcmp(argv[1],"~")==0)
+	if(strcmp(argv[1],"-")==0)
+	{
+		if(strlen(LAST_DIR)!=0)
+		{
+			sprintf(act, "%s", LAST_DIR);
+		}
+		else
+			return 0;
+	}
+	else if(strcmp(argv[1],"~")==0)
 		sprintf(act,"%s", HOME_DIR);
 	else if(argv[1]!=NULL && argv[1][0]=='~')
 	{
@@ -20,5 +29,6 @@ int cd(int argc, char** argv)
 		perror("Error in cd");
 		return 1;
 	}
+	strcpy(LAST_DIR, CURR_DIR);
 	return 0;
 }

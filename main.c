@@ -29,7 +29,7 @@ static void handle_sigint(int sig)
 		kill(fgprocess, SIGINT);
 		fgprocess=-1;
 	}
-	printf("\n");
+	printf("\n:'(");
 	run();
 }
 static void handle_sigstop(int sig) 
@@ -41,7 +41,7 @@ static void handle_sigstop(int sig)
 	add_bg(fgprocess, fgprocessname);
 	fgprocess=-1;
 	}
-	printf("\n");
+	printf("\n:'(");
 	run();
 }
 
