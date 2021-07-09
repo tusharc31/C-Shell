@@ -2,7 +2,7 @@
 #include "global.h"
 int setenvx(int argc, char** argv)
 {
-	if(argc!=3 || argc!=2)
+	if(argc!=3 && argc!=2)
 	{
 		printf("Invalid number of arguments");
 		return 1;
